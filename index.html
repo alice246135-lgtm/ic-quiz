@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+<title>智能交易觀念測驗</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;800&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: single study column, sticky score bar on top, one card per question grouped by topic */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#17202b; --muted:#5b6878; --line:#d9dfe6;
+  --accent:#1f5f8b; --accent-soft:#e3eef6;
+  --ok:#1d7a4c; --ok-soft:#e2f3ea; --bad:#b4372f; --bad-soft:#fbe7e5;
+  --display:"Noto Serif TC","Songti TC",serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11161c; --surface:#19212a; --fg:#e6ebf0; --muted:#97a4b3; --line:#2c3743;
+  --accent:#6fb0de; --accent-soft:#1d3245;
+  --ok:#5cc58f; --ok-soft:#173326; --bad:#ec7f76; --bad-soft:#3a1f1d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11161c; --surface:#19212a; --fg:#e6ebf0; --muted:#97a4b3; --line:#2c3743;
+  --accent:#6fb0de; --accent-soft:#1d3245;
+  --ok:#5cc58f; --ok-soft:#173326; --bad:#ec7f76; --bad-soft:#3a1f1d; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.7}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+header{padding-block:40px 20px}
+.eyebrow{font-size:13px;letter-spacing:.08em;color:var(--muted)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,6vw,40px);line-height:1.25;margin:6px 0 10px;text-wrap:balance}
+.lede{color:var(--muted);margin:0;max-width:60ch}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar-in{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.stat{display:flex;align-items:baseline;gap:6px;font-size:14px;color:var(--muted)}
+.stat b{font-family:var(--mono);font-size:20px;color:var(--fg);font-variant-numeric:tabular-nums}
+.stat.ok b{color:var(--ok)} .stat.bad b{color:var(--bad)}
+.meter{flex:1 1 120px;height:6px;background:var(--line);border-radius:3px;overflow:hidden;min-width:100px}
+.meter i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.tools{display:flex;gap:8px;margin-left:auto}
+button.t{font:inherit;font-size:14px;padding:6px 12px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer}
+button.t[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+button.t:focus-visible,.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h2{font-family:var(--display);font-weight:600;font-size:20px;margin:40px 0 12px;display:flex;align-items:baseline;gap:10px}
+h2 small{font-family:var(--body);font-size:13px;color:var(--muted);font-weight:400}
+.list{display:flex;flex-direction:column;gap:14px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 18px 16px}
+.q-head{display:flex;gap:12px;align-items:baseline}
+.num{font-family:var(--mono);font-size:14px;color:var(--accent);flex:none;min-width:2.2em}
+.stem{margin:0;font-weight:500;min-width:0}
+.opts{display:flex;flex-direction:column;gap:8px;margin:14px 0 0}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;font:inherit;font-size:15px;line-height:1.6;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}
+.opt:disabled{cursor:default}
+.opt .k{font-family:var(--mono);font-size:13px;flex:none;width:1.6em;height:1.6em;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);margin-top:1px}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.right .k{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.wrong .k{background:var(--bad);border-color:var(--bad);color:var(--surface)}
+.opt.dim{opacity:.55}
+.exp{margin:12px 0 0;padding:10px 12px;border-radius:8px;background:var(--bg);font-size:14.5px;color:var(--fg)}
+.exp b{color:var(--ok)} .exp b.x{color:var(--bad)}
+.done{margin-top:36px;padding:20px;border-radius:10px;border:1px solid var(--accent);background:var(--accent-soft)}
+.done h3{font-family:var(--display);margin:0 0 4px;font-size:20px}
+.done p{margin:0}
+.empty{color:var(--muted);padding:12px 0}
+@media (prefers-reduced-motion: reduce){.meter i{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="bar"><div class="bar-in">
+  <div class="stat"><span>已答</span><b id="sAns">0</b><span>/ 50</span></div>
+  <div class="stat ok"><span>答對</span><b id="sOk">0</b></div>
+  <div class="stat bad"><span>答錯</span><b id="sBad">0</b></div>
+  <div class="meter" aria-hidden="true"><i id="meter"></i></div>
+  <div class="tools">
+    <button class="t" id="btnWrong" aria-pressed="false">只看答錯</button>
+    <button class="t" id="btnReset">重新作答</button>
+  </div>
+</div></div>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">東吳資科碩專 · 智能交易 · 講義 P1–39</div>
+    <h1>智能交易觀念測驗</h1>
+    <p class="lede">50 題單選，考的是「為什麼」而不是背數字。點選答案後會立刻顯示對錯和解析，作答紀錄會留在這個瀏覽器裡。</p>
+  </header>
+  <main id="quiz"></main>
+  <div class="done" id="done" hidden><h3 id="doneTitle"></h3><p id="doneText"></p></div>
+</div>
+
+<script>
+const SECTIONS = ["IC 資訊係數","報酬率與因子","因子效應與文獻","策略建構","資料處理","預測模型","綜合情境"];
+// a = index of correct option in the original order; options are shuffled with a fixed seed when shown
+const Q = [
+ // IC
+ [0,"IC（資訊係數）衡量的是什麼？",["因子值與「當期」報酬的相關係數","因子值與「下一期」報酬的相關係數","因子本身的波動程度","AI 模型預測的準確率"],1,"IC = corr(X<sub>t</sub>, R<sub>t+1</sub>)。重點在「下一期」：看因子能不能預測未來報酬。"],
+ [0,"某因子多年來的 IC 都在 0 附近，最合理的解讀是？",["這個因子預測力很強","因子和下期報酬幾乎沒有關係，預測力弱","應該反向操作","代表資料一定有錯"],1,"IC 接近 0 代表因子高低和下期報酬高低沒什麼關聯，拿它選股效果有限。"],
+ [0,"三個因子的 IC 分別為 +0.04、−0.09、+0.06，哪一個對下期報酬的影響力最大？",["+0.04","−0.09","+0.06","無法比較，因為正負號不同"],1,"影響力看絕對值。|−0.09| 最大，負號只代表方向相反。"],
+ [0,"一個 IC 穩定為負的因子，應該怎麼看待？",["沒有價值，應該丟掉","只能拿來做空","仍有預測力，只要反向操作（買低賣高）","必須改用 Rank IC 才能用"],2,"負 IC 代表因子值越高、下期越差。把方向反過來，買低賣高，一樣能利用它。"],
+ [0,"當 IC > 0 時，下列敘述何者正確？",["因子值高的公司，下期報酬「傾向」比較高","因子值高的公司，下期「一定」上漲","所有股票下期都會上漲","因子值低的公司，下期報酬傾向比較高"],0,"相關係數描述的是整體傾向和相對高低，不保證每一檔、也不保證絕對上漲。"],
+ [0,"Rank IC 和 Normal IC 相比，主要特點是？",["只能用在動能因子","先排名再算相關，較不受極端值影響","數值一定比較大","不需要報酬資料"],1,"Rank IC 只看排序，一檔股票漲 300% 和漲 30% 如果名次一樣，影響就一樣。"],
+ [0,"某月有一檔股票報酬 +300%（極端值），哪一種 IC 受到的影響比較大？",["Normal IC","Rank IC","兩者影響一樣","兩者都不受影響"],0,"Normal IC 直接用原始數值，極端值會把相關係數拉偏；Rank IC 只把它當成第一名。"],
+ [0,"本課程 IC 公式中 h = 1 的意思是？",["只用 1 個因子","報酬是持有 1 個月的報酬","因子回看 1 年","每組只選 1 家公司"],1,"IC<sub>t</sub> = corr(X<sub>t</sub>, R<sub>t+1</sub>)，h 是持有期間，h = 1 就是看下個月的報酬。"],
+ // 報酬率與因子
+ [1,"股價從 100 漲到 200，再跌回 100。把兩期報酬「直接相加」，哪一種報酬率能正確得到總報酬 0？",["簡單報酬（+100% 與 −50%）","對數報酬（ln2 與 ln0.5）","兩種都可以","兩種都不行"],1,"簡單報酬相加得 +50%，但實際是回到原點。ln2 + ln0.5 = 0，對數報酬具可加性，這就是課程使用它的原因。"],
+ [1,"為了公平比較，台灣指數的報酬應該怎麼算？",["直接用新聞報導的漲跌幅","用和投資組合相同的方法：月收盤價取對數報酬","改用年報酬率","不用算，直接比較指數點數"],1,"策略報酬是對數報酬，大盤也要用同樣算法，兩邊的數字才能放在一起比。"],
+ [1,"規模因子為什麼用「對數」市值，而不是直接用市值？",["為了讓數值變成負數","公司間市值差距極大，取對數可以壓縮尺度、降低超大型公司的影響","因為市值常常缺值","讓規模因子等於報酬率"],1,"台積電和小型股的市值可以差上萬倍，直接用會被少數巨型公司主導；取 log 後分布比較均勻。"],
+ [1,"帳面市值比（BM）很高的公司，通常代表什麼？",["市場價格相對帳面價值偏低，偏向「價值股」","公司市值很大","股價過去一年大漲","公司負債很高"],0,"BM = 帳面價值 ÷ 市值。BM 高代表用比較便宜的價格就能買到相同的帳面價值。"],
+ [1,"為什麼帳面市值比可以用「1 ÷ 股價淨值比」來算？",["兩者其實是同一個數字","股價淨值比 = 市值 ÷ 帳面價值，取倒數就是帳面價值 ÷ 市值","為了避免缺值","這是 TEJ 的規定"],1,"P/B = 市值 / 淨值，倒過來就是 B/M。TEJ 有現成的股價淨值比，所以直接取倒數。"],
+ [1,"動能因子背後的核心假設是？",["過去漲多的股票，下一期傾向繼續表現較好","過去跌多的股票，下一期會反彈","小公司會漲得比較多","便宜的股票會漲得比較多"],0,"動能 = 趨勢延續。過去 12 個月的贏家傾向繼續贏。"],
+ // 效應與文獻
+ [2,"如果台股存在「小公司效應」，規模（size）因子的 IC 應該是？",["正的","負的","接近 0","無法判斷"],1,"小公司效應是規模越小報酬越高，也就是 size 越大、下期報酬越低，所以是負相關。"],
+ [2,"如果存在「帳面市值比效應」，bm 因子的 IC 應該是？",["正的","負的","接近 0","每個月正負交替"],0,"BM 效應是 BM 越高報酬越高，因子高 → 報酬高，所以是正相關。"],
+ [2,"如果存在「動能效應」，mom 因子的 IC 應該是？",["負的","正的","接近 0","每個月正負交替"],1,"過去漲越多（mom 越高），下期報酬越高，所以是正相關。"],
+ [2,"動能策略和價值（BM）策略的選股邏輯，最大的差別是？",["動能買「過去漲多」的股票，價值買「價格相對便宜」的股票","兩者完全相同","動能買小公司，價值買大公司","動能看帳面價值，價值看股價走勢"],0,"動能追趨勢，價值看便宜。兩者常常選到不同的股票，所以適合當作不同的因子。"],
+ [2,"Gu, Kelly & Xiu (2020) 這篇文獻對本課程的主要啟發是？",["證明動能效應不存在","機器學習方法可以用來改善報酬預測與資產定價","台股沒有小公司效應","預測時只能使用線性迴歸"],1,"該研究比較傳統線性迴歸、隨機森林、類神經網路等方法，是課程用 AI 預測 IC 的依據。"],
+ // 策略
+ [3,"挑因子時看 IC 的「絕對值」，而不是直接挑最大值，原因是？",["負數沒有意義","負 IC 一樣有預測力，只是方向相反","Excel 只能比較正數","只是為了簡化計算"],1,"−0.09 比 +0.04 更能預測，只是要反向操作。直接挑最大值會漏掉強的負向因子。"],
+ [3,"預測 IC：bm = +0.03、size = −0.07、mom = +0.05。應該採取哪個策略？",["買高 bm、賣低 bm","買大公司、賣小公司","買小公司、賣大公司","買高動能、賣低動能"],2,"|−0.07| 最大，選 size；IC 為負 → 買低賣高，也就是買小公司、賣大公司。"],
+ [3,"預測 IC：bm = +0.08、size = −0.02、mom = +0.05。應該採取哪個策略？",["買高 bm、賣低 bm","買低 bm、賣高 bm","買小公司、賣大公司","買高動能、賣低動能"],0,"|+0.08| 最大，選 bm；IC 為正 → 買高賣低。"],
+ [3,"「買高賣低」投資組合的報酬怎麼算？",["高等份報酬 + 低等份報酬","高等份平均報酬 − 低等份平均報酬","高等份報酬 − 大盤報酬","高等份報酬 × 低等份報酬"],1,"買進的那組賺它的報酬，放空的那組賺它的負報酬，合起來就是兩組相減。"],
+ [3,"IC 預測為正。某月大盤跌 8%，高等份 −4%，低等份 −9%。買高賣低的報酬是？",["−4%","−13%","+5%","−8%"],2,"−4% − (−9%) = +5%。大盤大跌時，策略仍然可能賺錢。"],
+ [3,"承上題，這個結果說明多空（買高賣低）策略的什麼特性？",["一定賺錢","主要賺兩組的相對表現，可以降低大盤漲跌的影響","只在多頭市場有效","報酬會和大盤完全同步"],1,"兩組都跟著大盤跌，但一買一空互相抵銷，剩下的是兩組之間的差距。"],
+ [3,"課程建立三種組合：多空、只買優勢組、只買劣勢組。「只買優勢組」和多空最大的差別是？",["只買優勢組會直接承受大盤漲跌","兩者沒有差別","只買優勢組沒有風險","多空組合不需要排序"],0,"沒有放空的那一邊來抵銷，大盤跌時只買優勢組也很容易一起跌。"],
+ [3,"預測 IC 為正，但當月實際 IC 是負的。「買高賣低」最可能的結果是？",["賺得更多","虧損，因為方向押錯了","報酬剛好是 0","完全不受影響"],1,"實際上是因子低的公司表現較好，你卻買高賣低，等於買到輸家、空到贏家。"],
+ [3,"等份數從 10 改成 964，最可能出現什麼變化？",["每組股票變多，風險更分散","每組只剩最極端的少數股票，報酬可能更極端，但波動更大","報酬一定變高","對結果沒有影響"],1,"964 等份時每組約 1 家公司，等於只押一兩檔，結果受個股運氣影響很大。"],
+ [3,"為什麼要比較 13 種不同的等份數？",["只是老師規定","找出哪種分組報酬比較好，並檢驗結果是否穩健","為了增加公司數量","為了讓 IC 變大"],1,"如果結果只在某一種等份才好，可能是巧合；多種等份都好，策略才比較可信。"],
+ [3,"只看 2014/01 一個月打敗大盤，就說策略有效，問題在哪？",["沒有問題","單一個月可能只是運氣，要用多個月看勝率和穩定性","2014 年的資料不準","應該改用年報酬"],1,"這也是延伸分析要把預測期間拉長的原因：增加樣本，才能看出真實的勝率。"],
+ // 資料處理
+ [4,"只保留 2013/12–2026/08 全期都存活的公司，可能造成什麼偏誤？",["前視偏誤","存活者偏誤：下市或經營不善的公司被排除，結果可能被高估","樣本過多","不會有任何偏誤"],1,"能活到 2026 年的公司通常體質較好，只看它們會讓報酬看起來比實際更漂亮。"],
+ [4,"既然有偏誤，為什麼課程仍然只保留存活公司？",["確保樣本外期間每家公司每個月都有資料，可以一致比較","為了讓報酬變高","因為 TEJ 只有存活公司的資料","為了刪除小公司"],0,"每家公司都有完整 153 個月，排序、分組、算 IC 時樣本才一致。這是簡化上的取捨。"],
+ [4,"補值時用「中位數」而不是「平均數」，主要原因是？",["中位數比較好算","中位數不受極端值影響","平均數可能是負的","Excel 沒有平均函數"],1,"只要有一兩家公司數值很極端，平均數就會被拉走；中位數比較能代表一般水準。"],
+ [4,"只要因子或報酬其中一邊是缺值，兩邊都改用該月中位數。這樣做的目的是？",["讓每家公司的因子和報酬都成對、筆數一致，並用中性的值，盡量不影響相關係數","讓報酬變高","讓 IC 一定為正","刪除該公司"],0,"CORREL 需要兩欄一一對應。補上中位數這種「不偏向任一邊」的值，對相關係數的干擾最小。"],
+ [4,"公式用 IFERROR 把算不出來的格子標成「缺值」，好處是？",["讓股價變正確","不會出現錯誤值干擾後續計算，也方便辨識哪些要補值","會自動幫你補值","讓 Excel 算得更快"],1,"後面的補值公式就是靠判斷「缺值」這個字，決定要不要用中位數取代。"],
+ [4,"用 XLOOKUP 合併資料時，最後一個參數要用 FALSE（完全相符），原因是？",["計算速度比較快","要對到同一家公司，股票代碼不能用近似比對","這樣才能往下拉公式","可以避免缺值"],1,"近似比對可能把 2330 的報酬對到 2329，資料就全部錯位了。"],
+ // 預測模型
+ [5,"站在 2013/12，為什麼不能直接算出 2013/12 的真實 IC？",["資料庫沒有 2013/12 的資料","需要 2013/12 到 2014/01 的報酬，那時還沒發生","因子值還沒算出來","Excel 無法計算"],1,"IC 用的是下一期報酬，當下還不知道，所以只能用歷史資料去預測。"],
+ [5,"如果用 2013/12 以後的資料訓練模型，再去預測 2013/12 的 IC，會犯什麼錯？",["存活者偏誤","前視偏誤（偷看未來資料）","樣本太少","沒有問題"],1,"用了決策當下不可能知道的資料，回測結果會好得不真實，實際交易時做不到。"],
+ [5,"訓練集（training set）的用途是？",["估計模型參數，例如 α 和 β","評估模型最終的預測績效","計算大盤報酬","補缺值"],0,"OLS 用 1999–2013/11 的歷史資料估出 α、β，這就是訓練。"],
+ [5,"測試集（test set）的用途是？",["估計模型參數","用沒參與訓練的資料，檢驗模型的預測能力","刪除缺值","計算因子值"],1,"代入 2013/11 的 X 預測 2013/12 的 IC，模型沒看過這筆資料，才能檢驗真正的預測力。"],
+ [5,"為什麼不能用模型在訓練集上的表現，來判斷模型好不好？",["訓練集太小","模型已經看過這些答案，表現會過度樂觀（過度配適）","訓練集沒有 IC","兩者其實沒有差別"],1,"就像考試前先看過考卷，考高分不代表真的會。"],
+ [5,"mom 的訓練集從 2000/01 開始，而不是 1999/01，原因是？",["1999 年的資料有錯","動能要用過去 12 個月股價，1999 年還湊不滿 12 個月","2000 年才有台灣指數","只是老師規定"],1,"股價從 1999/01 開始，第一個能算出 12 個月動能的時間點是 2000/01。"],
+ [5,"「未來報酬 = 觀察得到的部分 + 觀察不到的部分」，這句話告訴我們？",["模型可以完美預測未來","模型只能預測觀察得到的部分，一定會有預測誤差","觀察不到的部分可以直接忽略","預測永遠都是錯的"],1,"觀察不到的部分就是誤差項 ε，所以預測只能提高勝率，不能保證每次都對。"],
+ [5,"OLS 線性迴歸對 IC 和 X 之間關係的假設是？",["線性關係","樹狀分割的關係","多層的非線性關係","沒有任何假設"],0,"IC<sub>t+1</sub> = α + βX<sub>t</sub> + ε，就是一條直線。"],
+ [5,"隨機森林、類神經網路相較於 OLS，主要優勢是？",["計算比較快","可以捕捉非線性和變數間複雜的交互關係","不需要資料","一定預測得比較準"],1,"能捕捉更複雜的關係，但不保證一定更準，也可能過度配適，所以要實際比較。"],
+ [5,"延伸分析要比較 XGBoost、LSTM、ENet 等多種模型，目的是？",["讓報告比較長","比較不同方法的預測結果，找出較好、較穩定的方法","取代 IC 指標","減少需要的資料量"],1,"不同模型擅長不同的關係型態，實際比較才知道哪個在台股資料上表現最好。"],
+ [5,"延伸分析把預測期間從單一個月拉長到 2014 年以後的多個月，目的是？",["增加樣本點，評估預測能力、勝率和穩定性","讓報酬看起來更高","減少計算量","避免缺值"],0,"樣本越多，越能區分策略是真的有效還是運氣好。"],
+ // 綜合
+ [6,"整個策略流程的正確順序是？<br>① 算因子值與下期報酬　② 算歷史 IC　③ 用模型預測 IC　④ 選 |IC| 最大的因子並決定方向　⑤ 分等份建投資組合　⑥ 和大盤比較",["① ② ③ ④ ⑤ ⑥","① ③ ② ④ ⑤ ⑥","② ① ③ ⑤ ④ ⑥","① ② ④ ③ ⑤ ⑥"],0,"先有因子和報酬才能算 IC，有了歷史 IC 才能訓練模型預測，預測完才知道選哪個因子、怎麼買賣，最後才算績效。"],
+ [6,"如果三個因子的預測 IC 都非常接近 0，最合理的想法是？",["照樣選最大的，結果一定很好","因子的預測力都很弱，策略結果可能不穩定，需要謹慎","改選 IC 絕對值最小的","IC 接近 0 代表這個月會大賺"],1,"IC 接近 0 代表因子排序和報酬幾乎沒關係，就算挑了最大的，結果也可能和隨機差不多。"],
+ [6,"選到 size（預測 IC = −0.07），分 10 等份。2014/01 最小公司組 +1%，最大公司組 −2%，大盤 −3%。多空策略的結果是？",["−3%，輸給大盤","+3%，打敗大盤","−1%，打敗大盤","+1%，輸給大盤"],1,"IC 為負 → 買小賣大：+1% − (−2%) = +3%，高於大盤的 −3%。"],
+];
+
+// deterministic shuffle so option letters stay the same across reloads
+function rng(seed){return()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}}
+const items = Q.map((q,i)=>{
+  const r=rng(i*7919+31), idx=[0,1,2,3];
+  for(let j=3;j>0;j--){const k=Math.floor(r()*(j+1));[idx[j],idx[k]]=[idx[k],idx[j]]}
+  return {sec:q[0],stem:q[1],opts:idx.map(o=>q[2][o]),ans:idx.indexOf(q[3]),exp:q[4]};
+});
+
+const KEY="ic-quiz-p39";
+let picks={};
+try{picks=JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){picks={}}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(picks))}catch(e){}};
+let onlyWrong=false;
+const L="ABCD";
+
+function render(){
+  const root=document.getElementById("quiz");root.innerHTML="";
+  SECTIONS.forEach((name,s)=>{
+    const list=items.map((it,i)=>({it,i})).filter(x=>x.it.sec===s)
+      .filter(x=>!onlyWrong||(picks[x.i]!==undefined&&picks[x.i]!==x.it.ans));
+    if(!list.length)return;
+    const h=document.createElement("h2");
+    const all=items.filter(it=>it.sec===s).length;
+    h.innerHTML=`${name}<small>${all} 題</small>`;root.appendChild(h);
+    const box=document.createElement("div");box.className="list";
+    list.forEach(({it,i})=>box.appendChild(card(it,i)));
+    root.appendChild(box);
+  });
+  if(onlyWrong&&!root.children.length){root.innerHTML='<p class="empty">目前沒有答錯的題目。</p>'}
+  stats();
+}
+function card(it,i){
+  const el=document.createElement("article");el.className="q";el.id="q"+(i+1);
+  const p=picks[i];
+  el.innerHTML=`<div class="q-head"><span class="num">${String(i+1).padStart(2,"0")}</span><p class="stem">${it.stem}</p></div>`;
+  const opts=document.createElement("div");opts.className="opts";
+  it.opts.forEach((o,k)=>{
+    const b=document.createElement("button");b.className="opt";b.type="button";b.id=`q${i+1}o${k}`;
+    b.innerHTML=`<span class="k">${L[k]}</span><span>${o}</span>`;
+    if(p!==undefined){
+      b.disabled=true;
+      if(k===it.ans)b.classList.add("right");
+      else if(k===p)b.classList.add("wrong");
+      else b.classList.add("dim");
+    }
+    b.addEventListener("click",()=>{picks[i]=k;save();const n=card(it,i);el.replaceWith(n);stats()});
+    opts.appendChild(b);
+  });
+  el.appendChild(opts);
+  if(p!==undefined){
+    const ok=p===it.ans, e=document.createElement("p");e.className="exp";
+    e.innerHTML=(ok?'<b>答對</b>　':`<b class="x">答錯</b>　正確答案是 ${L[it.ans]}。`)+it.exp;
+    el.appendChild(e);
+  }
+  return el;
+}
+function stats(){
+  const done=Object.keys(picks).length;
+  const ok=Object.entries(picks).filter(([i,k])=>items[i].ans===k).length;
+  document.getElementById("sAns").textContent=done;
+  document.getElementById("sOk").textContent=ok;
+  document.getElementById("sBad").textContent=done-ok;
+  document.getElementById("meter").style.width=(done/items.length*100)+"%";
+  const d=document.getElementById("done");
+  if(done===items.length){
+    d.hidden=false;
+    document.getElementById("doneTitle").textContent=`完成！得分 ${ok * 2} / 100`;
+    document.getElementById("doneText").textContent=done-ok?`答錯 ${done-ok} 題。按上方「只看答錯」可以集中複習。`:"全部答對。";
+  }else d.hidden=true;
+}
+document.getElementById("btnWrong").addEventListener("click",e=>{
+  onlyWrong=!onlyWrong;e.currentTarget.setAttribute("aria-pressed",onlyWrong);render();
+});
+document.getElementById("btnReset").addEventListener("click",()=>{
+  picks={};save();onlyWrong=false;document.getElementById("btnWrong").setAttribute("aria-pressed","false");render();window.scrollTo(0,0);
+});
+render();
+</script>
+</body>
+</html>
