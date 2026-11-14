@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{margin:0}</style>
+<title>智能交易重點整理</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;800&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: one reading column of study notes; topic jump-links up top; formulas set in mono "formula slips" */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#17202b; --muted:#5b6878; --line:#d9dfe6;
+  --accent:#1f5f8b; --accent-soft:#e3eef6; --pos:#1d7a4c; --neg:#b4372f;
+  --display:"Noto Serif TC","Songti TC",serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11161c; --surface:#19212a; --fg:#e6ebf0; --muted:#97a4b3; --line:#2c3743;
+  --accent:#6fb0de; --accent-soft:#1d3245; --pos:#5cc58f; --neg:#ec7f76; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11161c; --surface:#19212a; --fg:#e6ebf0; --muted:#97a4b3; --line:#2c3743;
+  --accent:#6fb0de; --accent-soft:#1d3245; --pos:#5cc58f; --neg:#ec7f76; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.75}
+.wrap{max-width:780px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 72px}
+.eyebrow{font-size:13px;letter-spacing:.08em;color:var(--muted)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,6vw,40px);line-height:1.25;margin:6px 0 10px;text-wrap:balance}
+.lede{color:var(--muted);margin:0 0 20px;max-width:62ch}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px}
+nav.toc a{font-size:14px;padding:4px 10px;border:1px solid var(--line);border-radius:999px;color:var(--fg);text-decoration:none;background:var(--surface)}
+nav.toc a:hover,nav.toc a:focus-visible{border-color:var(--accent);color:var(--accent);outline:none}
+.cta{display:inline-flex;gap:6px;align-items:center;margin-top:12px;font-size:15px;color:var(--accent);font-weight:500}
+section{margin-top:44px;scroll-margin-top:16px}
+h2{font-family:var(--display);font-weight:600;font-size:22px;margin:0 0 12px;display:flex;gap:10px;align-items:baseline;text-wrap:balance}
+h2 .pg{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:500;border:1px solid var(--line);border-radius:4px;padding:0 6px}
+h3{font-size:16px;margin:20px 0 6px}
+p{margin:0 0 10px;max-width:68ch}
+ul,ol{margin:0 0 10px;padding-left:1.4em;max-width:68ch}
+li{margin:2px 0}
+b{font-weight:700}
+.f{font-family:var(--mono);font-size:14.5px;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:4px;padding:10px 14px;margin:10px 0 14px;overflow-x:auto;white-space:nowrap}
+.f small{display:block;font-family:var(--body);color:var(--muted);font-size:13px;white-space:normal}
+code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);padding:1px 5px;border-radius:3px}
+.tbl{overflow-x:auto;margin:10px 0 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:15px;min-width:520px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:13px;color:var(--muted);font-weight:500;letter-spacing:.04em}
+tr:last-child td{border-bottom:0}
+.pos{color:var(--pos);font-weight:700}.neg{color:var(--neg);font-weight:700}
+.key{background:var(--accent-soft);border-radius:8px;padding:12px 16px;margin:12px 0}
+.key p:last-child{margin:0}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:12px 0 16px;padding:0;list-style:none;counter-reset:s}
+.flow li{counter-increment:s;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14.5px;line-height:1.5;margin:0}
+.flow li::before{content:counter(s);display:block;font-family:var(--mono);color:var(--accent);font-size:13px;margin-bottom:2px}
+.timeline{font-family:var(--mono);font-size:13.5px;line-height:1.9;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow-x:auto;white-space:pre;margin:10px 0 14px}
+footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">東吳資科碩專 · 智能交易 · 鄭宏文教授 · 講義 P1–39</div>
+  <h1>智能交易重點整理</h1>
+  <p class="lede">用 AI 預測規模、帳面市值比、動能三個因子的 IC，挑出最有預測力的因子建立多空投資組合，再和台灣指數比較。以下依講義順序整理。</p>
+  <nav class="toc" aria-label="章節">
+    <a href="#goal">課程目標</a><a href="#data">資料</a><a href="#ret">對數報酬</a><a href="#factor">三個因子</a><a href="#ic">IC</a><a href="#strategy">策略步驟</a><a href="#excel">Excel 處理</a><a href="#ols">OLS 預測</a><a href="#pick">選因子公式</a><a href="#trap">常考觀念</a>
+  </nav>
+
+  <section id="goal">
+    <h2>課程目標與報告主題 <span class="pg">P2–9</span></h2>
+    <p>大盤長期大多向上成長，目標是找出<b>長期能勝過大盤</b>的策略，並用 AI 提高勝率和穩定性。</p>
+    <div class="tbl"><table>
+      <tr><th>項目</th><th>內容</th></tr>
+      <tr><td>3 種因子</td><td>規模 size、帳面市值比 bm、動能 mom</td></tr>
+      <tr><td>3 種 AI 模型</td><td>線性迴歸 OLS、隨機森林 RF、類神經網路 NN</td></tr>
+      <tr><td>13 種等份</td><td>10, 20, 50, 100, 107, 120, 137, 160, 192, 241, 321, 482, 964</td></tr>
+      <tr><td>比較基準</td><td>台灣指數（大盤）</td></tr>
+      <tr><td>參考文獻</td><td>Gu, Kelly &amp; Xiu (2020), <i>Empirical Asset Pricing via Machine Learning</i>, RFS</td></tr>
+    </table></div>
+    <p>等份數的由來：樣本約 964 家公司，964 ÷ 9 ≈ 107、÷ 8 ≈ 120 … ÷ 1 = 964，也就是每組 9 家、8 家 … 1 家。</p>
+    <p>書面報告要包含：主題、動機、方法、資料來源、資料處理、程式撰寫、成果展現、成果分析、結論、心得、其他。</p>
+  </section>
+
+  <section id="data">
+    <h2>台股資料 <span class="pg">P10</span></h2>
+    <ul>
+      <li>來源：<b>台灣經濟新報 TEJ</b></li>
+      <li>期間：股價月資料 <b>1999/01 ~ 2026/08</b></li>
+      <li>樣本：<b>2013/12 ~ 2026/08 全期存活</b>的上市櫃普通股，只保留代碼 <b>1101 ~ 9962</b></li>
+    </ul>
+  </section>
+
+  <section id="ret">
+    <h2>對數報酬率 <span class="pg">P11</span></h2>
+    <div class="f">R<sub>t+h</sub> = ln( S<sub>t+h</sub> / S<sub>t</sub> )<small>S 是收盤價，h 是持有月數。課程使用 h = 1。</small></div>
+    <p>使用對數報酬而不用簡單報酬，是因為它<b>具可加性</b>、不受基期影響、漲跌幅對稱。</p>
+    <p>例：100 → 200 → 100。簡單報酬 +100% 和 −50% 相加得 +50%，是錯的；對數報酬 ln2 + ln0.5 = 0，正確反映回到原點。</p>
+  </section>
+
+  <section id="factor">
+    <h2>三個因子與相關效應 <span class="pg">P12–17</span></h2>
+    <div class="tbl"><table>
+      <tr><th>因子</th><th>定義</th><th>效應</th><th>預期 IC</th></tr>
+      <tr><td><b>規模 size</b></td><td>log(市值)<br>市值 = 收盤價 × 流通在外股數</td><td>小公司效應：小型股報酬較高。Banz (1981)；Reinganum (1981) 發現集中在 <b>1 月</b></td><td class="neg">負</td></tr>
+      <tr><td><b>帳面市值比 bm</b></td><td>股東權益 ÷ 市值<br>= 1 ÷ 股價淨值比</td><td>BM 效應：高 BM（價值股）報酬高於低 BM（魅力股）。Fama &amp; French (1992)：差距每月 <b>1.53%</b></td><td class="pos">正</td></tr>
+      <tr><td><b>動能 mom</b></td><td>ln( S<sub>t−1</sub> / S<sub>t−12</sub> )<br>形成期 12 個月</td><td>動能效應：過去贏家繼續贏，約每月 <b>1%</b> 超額報酬。Jegadeesh &amp; Titman (1993)：買過去 6–12 個月贏家、賣輸家</td><td class="pos">正</td></tr>
+    </table></div>
+    <p>規模取對數，是因為公司之間的市值可以差上萬倍，取 log 後能壓縮尺度，避免少數巨型公司主導結果。</p>
+  </section>
+
+  <section id="ic">
+    <h2>資訊係數 IC <span class="pg">P18–20</span></h2>
+    <div class="f">IC<sub>t</sub> = corr( X<sub>t</sub>, R<sub>t+1</sub> )<small>本期因子值和「下一期」報酬的相關係數。課程用 Normal IC，h = 1。</small></div>
+    <ul>
+      <li>範圍 <b>−1 ~ 1</b></li>
+      <li><span class="pos">IC &gt; 0</span>：因子越高，下期報酬傾向越高</li>
+      <li><span class="neg">IC &lt; 0</span>：因子越高，下期報酬傾向越低</li>
+      <li><b>|IC| 越大，預測力越強</b>；接近 0 代表幾乎沒有預測力</li>
+    </ul>
+    <div class="tbl"><table>
+      <tr><th></th><th>Normal IC</th><th>Rank IC</th></tr>
+      <tr><td>算法</td><td>原始數值算相關</td><td>先排名，再算相關</td></tr>
+      <tr><td>看什麼</td><td>數值大小的線性關係</td><td>排序是否一致</td></tr>
+      <tr><td>受極端值影響</td><td>大</td><td>小</td></tr>
+    </table></div>
+  </section>
+
+  <section id="strategy">
+    <h2>策略步驟 <span class="pg">P21–25</span></h2>
+    <ol class="flow">
+      <li>算下期報酬和 3 個因子值</li>
+      <li>每月算歷史 IC，每個因子一條 IC 序列</li>
+      <li>站在 2013/12，用 2013/11 以前資料預測 IC</li>
+      <li>選 |預測 IC| 最大的因子</li>
+      <li>依 IC 正負決定買賣方向</li>
+      <li>依因子值分 N 等份建組合</li>
+      <li>算 2014/01 報酬，和台灣指數比較</li>
+    </ol>
+    <div class="tbl"><table>
+      <tr><th>預測 IC</th><th>策略</th><th>買</th><th>賣（放空）</th></tr>
+      <tr><td class="pos">正</td><td>買高賣低</td><td>因子最高的等份（優勢組）</td><td>因子最低的等份</td></tr>
+      <tr><td class="neg">負</td><td>買低賣高</td><td>因子最低的等份</td><td>因子最高的等份</td></tr>
+    </table></div>
+    <p><b>3 種投資組合</b>：多空（買高賣低或買低賣高）、只買優勢組、只買劣勢組。</p>
+    <div class="f">多空報酬 = 買進組平均報酬 − 放空組平均報酬<small>例：選到 size，IC = −0.07 → 買小賣大。小公司組 +1%、大公司組 −2% → 報酬 +3%，大盤 −3%，打敗大盤。</small></div>
+    <p>台灣指數也要用月收盤價<b>自己算對數報酬</b>，算法一致才能比較。</p>
+    <h3>延伸分析</h3>
+    <ul>
+      <li>比較 13 種等份：等份越多，每組股票越少、越極端，報酬可能更高但波動更大</li>
+      <li>把預測期間拉長到 2014/01 起的多個月：增加樣本，看勝率和穩定性</li>
+      <li>換其他模型：XGBoost、雙向 LSTM、Bayes、PLS、PCR、ENet、GLM、GBRT</li>
+    </ul>
+  </section>
+
+  <section id="excel">
+    <h2>Excel 資料處理 <span class="pg">P26–30</span></h2>
+    <h3>變數計算</h3>
+    <div class="tbl"><table>
+      <tr><th>變數</th><th>公式</th></tr>
+      <tr><td>下個月月報酬</td><td><code>=IFERROR(LN(收盤價!D2/收盤價!C2),"缺值")</code></td></tr>
+      <tr><td>size</td><td><code>=IFERROR(LOG(市值!C2*1000000),"缺值")</code></td></tr>
+      <tr><td>bm</td><td><code>=IFERROR(1/股價淨值比!C2,"缺值")</code></td></tr>
+      <tr><td>mom（O2 格）</td><td><code>=IFERROR(LN(收盤價!N2/收盤價!C2),"缺值")</code><br>2000/01 的動能 = 1999/12 股價 ÷ 1999/01 股價</td></tr>
+    </table></div>
+    <h3>處理流程</h3>
+    <ul>
+      <li><b>合併</b>：<code>XLOOKUP(查找值, 查找範圍, 回傳範圍, FALSE)</code>，FALSE 是完全相符，範圍要加 <code>$</code> 固定</li>
+      <li><b>存活公司</b>：用 COUNT 數 2013/12 ~ 2026/08 有幾個月有值，<b>不是 153 個月的公司刪除</b></li>
+      <li><b>補值</b>：因子或報酬其中一個是「缺值」，兩邊都用<b>該月中位數</b>補</li>
+      <li><b>算 IC</b>：<code>=CORREL(size_補值!C$2:C$1443, 下個月月報酬_補值!C$2:C$1443)</code></li>
+    </ul>
+    <p>快捷鍵：Ctrl+A 全選；Ctrl+Shift+↓ 選到底；Ctrl+↑ 回頂部。</p>
+  </section>
+
+  <section id="ols">
+    <h2>預測模型：OLS 線性迴歸 <span class="pg">P32–38</span></h2>
+    <p>未來報酬 = 觀察得到的部分（模型可以預測）+ 觀察不到的部分（誤差）。</p>
+    <div class="f">IC<sub>t+1</sub> = α + β·X<sub>t</sub> + ε<small>用訓練集估出 α、β，再代入最新的 X 預測下一期 IC。</small></div>
+    <div class="timeline">bm、size   訓練集  X: 1999/01 ─ 2013/10    IC: 1999/02 ─ 2013/11
+mom        訓練集  X: 2000/01 ─ 2013/10    IC: 2000/02 ─ 2013/11
+測試集     代入 X(2013/11) → 預測 IC(2013/12) → 用來決定 2014/01 的持股</div>
+    <div class="key">
+      <p><b>為什麼站在 2013/12 算不出真實 IC(2013/12)？</b>因為它需要 2013/12 → 2014/01 的報酬，當下還沒發生。</p>
+      <p><b>為什麼 mom 從 2000/01 開始？</b>動能要用過去 12 個月股價，股價從 1999/01 開始，最早到 2000/01 才湊得滿。</p>
+    </div>
+  </section>
+
+  <section id="pick">
+    <h2>選因子的 Excel 公式 <span class="pg">P39</span></h2>
+    <div class="tbl"><table>
+      <tr><th>格子</th><th>用途</th><th>公式</th></tr>
+      <tr><td>C6</td><td>|IC| 最大的位置</td><td><code>=MATCH(MAX(ABS(C3:C5)), ABS(C3:C5), 0)</code></td></tr>
+      <tr><td>C7</td><td>選到哪個因子</td><td><code>=IF(C6=1,"bm",IF(C6=2,"size",IF(C6=3,"mom")))</code></td></tr>
+      <tr><td>C8</td><td>選到的 IC 值</td><td><code>=IF(C6=1,C3,IF(C6=2,C4,IF(C6=3,C5)))</code></td></tr>
+    </table></div>
+    <p>C6 出現 <code>#VALUE!</code> 時，按 <b>Ctrl + Shift + Enter</b> 讓它變成陣列公式。</p>
+  </section>
+
+  <section id="trap">
+    <h2>常考觀念</h2>
+    <div class="tbl"><table>
+      <tr><th>觀念</th><th>重點</th></tr>
+      <tr><td>前視偏誤</td><td>用了決策當下還不知道的資料，例如用 2013/12 以後的資料預測 2013/12 的 IC。回測會好得不真實。</td></tr>
+      <tr><td>存活者偏誤</td><td>只留全期存活的公司，下市的爛公司被排除，結果可能被高估。課程為了資料完整而接受這個取捨。</td></tr>
+      <tr><td>訓練集 vs 測試集</td><td>訓練集用來估參數；測試集用模型沒看過的資料檢驗預測力。只看訓練集表現會過度樂觀（過度配適）。</td></tr>
+      <tr><td>中位數補值</td><td>中位數不受極端值影響，補上去也比較不會扭曲相關係數。</td></tr>
+      <tr><td>多空組合</td><td>賺兩組的相對表現，可以降低大盤漲跌的影響。大盤大跌時仍可能賺錢。</td></tr>
+      <tr><td>方向押錯</td><td>預測 IC 為正、實際為負時，買高賣低會虧損。</td></tr>
+      <tr><td>單月結果</td><td>只有一個月打敗大盤可能是運氣，要看多個月的勝率和穩定性。</td></tr>
+      <tr><td>AI 模型</td><td>RF、NN 能捕捉非線性關係，但不保證一定比 OLS 準，要實際比較。</td></tr>
+    </table></div>
+  </section>
+
+  <footer>整理自《智能交易》講義第 1–39 頁。第 5–7、31、35–38 頁是圖表和程式截圖，這份整理只涵蓋文字內容。</footer>
+</div>
+</body>
+</html>
